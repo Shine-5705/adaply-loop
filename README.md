@@ -6,7 +6,7 @@ Developers correct their AI coding agents the same way, over and over: *"no, use
 
 Adaply Loop reads the session logs your agents already write, finds the corrections you keep repeating, and turns the recurring ones into versioned `AGENTS.md` rules, so every agent on the team gets them.
 
-**Live demo (runs in your browser, nothing is uploaded):** https://shine-5705.github.io/adaply-loop/
+**Website:** https://shine-5705.github.io/adaply-loop/ · **Workspace demo (runs in your browser, nothing is uploaded):** https://shine-5705.github.io/adaply-loop/app/?sample
 
 ```
 $ node bin/adaply-loop.mjs propose examples/sessions --repo examples/repo
