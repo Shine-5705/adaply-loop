@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Adaply Loop — turn repeated agent corrections into team rules</title>
+<meta name="description" content="Drop Claude Code or Codex session logs. Adaply Loop finds the corrections you keep repeating and writes them into AGENTS.md. Runs entirely in your browser.">
+<style>
+:root{--bg:#fbfbfa;--panel:#fff;--ink:#111113;--body:#3c3c43;--muted:#8a8a93;--rule:#e7e7ea;--acc:#5b5bd6;--ok:#1a7f4b;--okbg:#e9f6ef;--hold:#8a8a93;--mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--body);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+nav{border-bottom:1px solid var(--rule);background:rgba(251,251,250,.85);backdrop-filter:blur(8px);position:sticky;top:0;z-index:5}
+nav .wrap{display:flex;align-items:center;gap:20px;height:52px}.logo{font-weight:650;color:var(--ink);letter-spacing:-.01em;display:flex;gap:8px;align-items:center}
+.dot{width:14px;height:14px;border-radius:4px;background:linear-gradient(135deg,var(--acc),#8e8ef0)}nav a{color:var(--muted);text-decoration:none;font-size:13px}nav a:hover{color:var(--ink)}nav .sp{flex:1}
+h1{font-size:44px;line-height:1.08;letter-spacing:-.03em;color:var(--ink);margin:64px 0 14px;font-weight:650;max-width:760px}
+.lede{font-size:17px;max-width:640px;color:var(--body);margin:0 0 28px}
+.btn{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);font:inherit;font-weight:550;cursor:pointer;text-decoration:none}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}.btn:hover{border-color:#cfcfd4}.btn.primary:hover{background:#2a2a2e}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.drop{margin:36px 0 0;border:1.5px dashed #d4d4da;border-radius:12px;padding:26px;text-align:center;color:var(--muted);background:var(--panel);transition:.15s}
+.drop.on{border-color:var(--acc);background:#f4f4fe}.drop code{font-family:var(--mono);font-size:12px;color:var(--body)}
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin:44px 0}
+.pipe div{background:var(--panel);padding:16px}.pipe b{display:block;color:var(--ink);font-size:14px;margin:4px 0 4px}.pipe span{font:11px var(--mono);color:var(--muted)}.pipe p{margin:0;font-size:12.5px}.pipe .soon{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 18px}.stat{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
+.stat b{display:block;font-size:24px;color:var(--ink);letter-spacing:-.02em;font-weight:600}.stat span{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:12px}.card h3{margin:0;padding:14px 16px;border-bottom:1px solid var(--rule);font-size:13px;color:var(--ink);font-weight:600;display:flex;justify-content:space-between}
+.rule{padding:14px 16px;border-bottom:1px solid var(--rule)}.rule:last-child{border:0}
+.rule .top{display:flex;gap:10px;align-items:baseline}.tag{font:11px var(--mono);padding:2px 7px;border-radius:5px;white-space:nowrap}
+.tag.ok{background:var(--okbg);color:var(--ok)}.tag.hold{background:#f2f2f4;color:var(--hold)}
+.rule .t{color:var(--ink);font-weight:550}.meta{font:11.5px var(--mono);color:var(--muted);margin:6px 0 0}
+.checks{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font:11.5px var(--mono)}.checks .p{color:var(--ok)}.checks .f{color:#b4232c}
+details{margin-top:8px}summary{cursor:pointer;font-size:12px;color:var(--acc)}blockquote{margin:8px 0 0;padding:8px 10px;border-left:2px solid var(--rule);background:#fafafb;font-size:12.5px;border-radius:0 6px 6px 0}
+blockquote small{display:block;color:var(--muted);font:11px var(--mono);margin-top:4px}
+pre{margin:0;padding:16px;font:12px/1.6 var(--mono);white-space:pre-wrap;color:var(--body);max-height:520px;overflow:auto}
+.add{color:var(--ok)}.empty{padding:40px;text-align:center;color:var(--muted)}
+.note{font-size:12px;color:var(--muted);margin:14px 0 0}
+footer{border-top:1px solid var(--rule);margin-top:72px;padding:24px 0 40px;color:var(--muted);font-size:12.5px}footer a{color:var(--body)}
+.term{background:#111113;color:#d6d6dc;border-radius:12px;padding:16px 18px;font:12.5px/1.7 var(--mono);margin:18px 0 0;overflow:auto}.term .c{color:#7d7d88}
+@media(max-width:820px){h1{font-size:32px}.pipe,.stats{grid-template-columns:1fr 1fr}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><div class="logo"><span class="dot"></span>Adaply Loop</div><a href="#how">How it works</a><a href="#cli">CLI</a><span class="sp"></span><a href="https://github.com/Shine-5705/adaply-loop">GitHub</a></div></nav>
+<main class="wrap">
+<h1>Your coding agent should only need to be told once.</h1>
+<p class="lede">Drop in Claude Code or Codex session logs. Adaply Loop finds the corrections you keep repeating across sessions, gates them, and writes them into <code>AGENTS.md</code> so every agent on the team gets them. Everything runs in this tab; nothing is uploaded.</p>
+<div class="row"><button class="btn primary" id="sample">Analyze sample sessions</button><label class="btn" for="file">Open .jsonl logs…</label><input id="file" type="file" accept=".jsonl" multiple hidden></div>
+<div class="drop" id="drop">Drop session logs here — <code>~/.claude/projects/**/*.jsonl</code> or <code>~/.codex/sessions/**/rollout-*.jsonl</code></div>
+
+<section id="out"></section>
+
+<div class="pipe" id="how">
+<div><span>01</span><b>Capture</b><p>Reads Claude Code and Codex logs. Secrets and emails are redacted locally first.</p></div>
+<div><span>02</span><b>Find</b><p>Spots user turns that correct the agent: “no, use…”, “don't…”, “I said…”.</p></div>
+<div><span>03</span><b>Cluster</b><p>Groups the same correction across sessions, repos and harnesses.</p></div>
+<div><span>04</span><b>Gate</b><p>Adopts a rule only if it recurs in 2+ sessions and doesn't duplicate or contradict AGENTS.md. <span class="soon">Replay testing: in progress.</span></p></div>
+<div><span>05</span><b>Ship</b><p>Writes a versioned block to AGENTS.md. One command rolls it back.</p></div>
+</div>
+
+<h2 id="cli" style="color:var(--ink);font-size:20px;letter-spacing:-.01em;margin:0">Run it on your own machine</h2>
+<div class="term"><span class="c"># zero dependencies, Node 18+</span>
+git clone https://github.com/Shine-5705/adaply-loop && cd adaply-loop
+node bin/adaply-loop.mjs scan                       <span class="c"># reads ~/.claude/projects and ~/.codex/sessions</span>
+node bin/adaply-loop.mjs apply --repo ~/code/my-app  <span class="c"># writes AGENTS.md, versioned in .adaply/</span>
+node bin/adaply-loop.mjs rollback --repo ~/code/my-app</div>
+</main>
+<footer><div class="wrap">Adaply Loop is an open-source prototype by <a href="https://github.com/Shine-5705">Shine Gupta</a> (TheAdaply) for INNOVATE INDIA 2026. MIT licensed. The sample sessions are synthetic and labelled as such.</div></footer>
+<script type="module">
+import { analyze, renderBlock, applyBlock } from './src/engine.mjs';
+const SAMPLE = ['claude-code/2026-11-09-add-gst-field.jsonl','claude-code/2026-11-11-invoice-pdf.jsonl','claude-code/2026-11-13-discount-tests.jsonl','claude-code/2026-11-16-dark-mode.jsonl','codex/2026-11-14-rollout-reminders.jsonl','codex/2026-11-17-rollout-export.jsonl'];
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const out = document.getElementById('out');
+function render(files, existing, label) {
+  const r = analyze(files, existing);
+  const block = renderBlock(r.gated, 1);
+  const next = applyBlock(existing, block);
+  const adopted = r.gated.filter((g) => g.adopt).length;
+  const harn = [...new Set(r.sessions.map((s) => s.harness))].join(' + ');
+  out.innerHTML = `
+  <div class="stats">
+    <div class="stat"><b>${r.sessions.length}</b><span>sessions · ${esc(harn)}</span></div>
+    <div class="stat"><b>${r.corrections.length}</b><span>corrections found</span></div>
+    <div class="stat"><b>${adopted} / ${r.gated.length}</b><span>rules pass the gate</span></div>
+    <div class="stat"><b>${r.redactions}</b><span>secrets redacted locally</span></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Recurring corrections <span style="color:var(--muted);font-weight:400">${esc(label)}</span></h3>
+      ${r.gated.map((g) => `<div class="rule"><div class="top"><span class="tag ${g.adopt ? 'ok' : 'hold'}">${g.adopt ? 'ADOPT' : 'HOLD'}</span><span class="t">${esc(g.rule)}</span></div>
+        <div class="meta">${g.id} · ${g.occurrences}× in ${g.sessions} session${g.sessions > 1 ? 's' : ''} · ${esc(g.harnesses.join(', '))}</div>
+        <div class="checks">${g.checks.map((c) => `<span class="${c.pass ? 'p' : 'f'}" title="${esc(c.detail)}">${c.pass ? '✓' : '✗'} ${c.name}</span>`).join('')}</div>
+        <details><summary>Evidence (${g.evidence.length})</summary>${g.evidence.map((e) => `<blockquote>${esc(e.quote)}<small>${esc(e.file)} · ${esc(e.harness)}${e.ts ? ' · ' + esc(e.ts.slice(0, 16).replace('T', ' ')) : ''}</small></blockquote>`).join('')}</details></div>`).join('') || '<div class="empty">No corrections found in these logs.</div>'}
+    </div>
+    <div class="card"><h3>AGENTS.md preview <a href="#" id="dl" style="color:var(--acc);font-weight:500;text-decoration:none">Download</a></h3>
+      <pre>${esc(next).replace(esc(block), `<span class="add">${esc(block)}</span>`)}</pre></div>
+  </div>
+  <p class="note">Heuristic correction detection (v0.1). Rules are drafts until a human merges them; the replay test gate is the next milestone.</p>`;
+  document.getElementById('dl').onclick = (e) => { e.preventDefault(); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([next], { type: 'text/markdown' })); a.download = 'AGENTS.md'; a.click(); };
+  out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+document.getElementById('sample').onclick = async () => {
+  const files = await Promise.all(SAMPLE.map(async (p) => ({ name: p, text: await (await fetch('./examples/sessions/' + p)).text() })));
+  const existing = await (await fetch('./examples/repo/AGENTS.md')).text();
+  render(files, existing, 'synthetic sample');
+};
+async function readFiles(list) { const files = await Promise.all([...list].filter((f) => f.name.endsWith('.jsonl')).map(async (f) => ({ name: f.name, text: await f.text() }))); if (files.length) render(files, '', `${files.length} local file${files.length > 1 ? 's' : ''}`); }
+document.getElementById('file').onchange = (e) => readFiles(e.target.files);
+const drop = document.getElementById('drop');
+['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('on'); }));
+['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove('on'); }));
+drop.addEventListener('drop', (e) => readFiles(e.dataTransfer.files));
+</script>
+</body></html>

@@ -1,0 +1,6 @@
+{"timestamp": "2026-11-17T09:00:00Z", "type": "session_meta", "payload": {"id": "cx-1711", "cwd": "/home/dev/acme-invoices"}}
+{"timestamp": "2026-11-17T09:00:01Z", "type": "response_item", "payload": {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "<environment_context>cwd</environment_context>"}]}}
+{"timestamp": "2026-11-17T09:01:00Z", "type": "response_item", "payload": {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "Add CSV export of invoices."}]}}
+{"timestamp": "2026-11-17T09:02:00Z", "type": "response_item", "payload": {"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": "Added an export using the csv-stringify package installed via npm i csv-stringify."}]}}
+{"timestamp": "2026-11-17T09:03:00Z", "type": "response_item", "payload": {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "We always use pnpm, never npm. Please remove the package-lock.json you created."}]}}
+{"timestamp": "2026-11-17T09:04:00Z", "type": "response_item", "payload": {"type": "message", "role": "assistant", "content": [{"type": "output_text", "text": "Removed package-lock.json and installed with pnpm."}]}}

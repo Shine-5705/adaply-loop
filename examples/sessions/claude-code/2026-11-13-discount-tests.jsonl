@@ -1,0 +1,5 @@
+{"type": "user", "sessionId": "cc-1311", "cwd": "/home/dev/acme-invoices", "timestamp": "2026-11-13T10:00:00Z", "message": {"role": "user", "content": "Write tests for the discount calculator."}}
+{"type": "assistant", "sessionId": "cc-1311", "cwd": "/home/dev/acme-invoices", "timestamp": "2026-11-13T10:01:00Z", "message": {"role": "assistant", "content": [{"type": "text", "text": "Added __tests__/discount.test.js using Jest and installed jest with npm."}]}}
+{"type": "user", "sessionId": "cc-1311", "timestamp": "2026-11-13T10:01:30Z", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "t1", "content": "ok"}]}}
+{"type": "user", "sessionId": "cc-1311", "cwd": "/home/dev/acme-invoices", "timestamp": "2026-11-13T10:02:00Z", "message": {"role": "user", "content": "Wrong test runner. We use vitest, not jest. And use pnpm instead of npm, I said this before."}}
+{"type": "assistant", "sessionId": "cc-1311", "cwd": "/home/dev/acme-invoices", "timestamp": "2026-11-13T10:03:00Z", "message": {"role": "assistant", "content": [{"type": "text", "text": "Rewrote the tests for vitest and installed it with pnpm."}]}}

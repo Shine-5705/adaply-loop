@@ -1,0 +1,16 @@
+{
+  "name": "adaply-loop",
+  "version": "0.1.0",
+  "description": "Turn repeated corrections to coding agents into tested, versioned AGENTS.md rules. Local-first, zero dependencies.",
+  "type": "module",
+  "bin": { "adaply-loop": "bin/adaply-loop.mjs" },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "demo": "node bin/adaply-loop.mjs propose examples/sessions --repo examples/repo",
+    "dev": "python3 -m http.server 5173"
+  },
+  "engines": { "node": ">=18" },
+  "license": "MIT",
+  "author": "Shine Gupta <https://github.com/Shine-5705>",
+  "repository": "https://github.com/Shine-5705/adaply-loop"
+}
